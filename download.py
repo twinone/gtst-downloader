@@ -108,7 +108,7 @@ num_ts, ts_link = num_ts_files(content)
 
 print ""
 print "Downloading " + str(num_ts) + " parts..."
-status, out, err = runprogram(["./download-parts.sh", ts_link, str(num_ts), WORK_DIR])
+status, out, err = runprogram(["./parts.sh", ts_link, str(num_ts), WORK_DIR])
 if status != 0:
     print "Error!: " + str(status)
     print out
