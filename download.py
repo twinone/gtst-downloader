@@ -10,7 +10,8 @@ WORK_DIR = "out"
 SERVE_FILE = "/var/www/out.mp4"
 
 def get_url(token):
-    return "http://217.118.160.67/10/v166/aes/adaptive/components/soaps/gtst/279883/" + token + ".ssm/" + token + ".m3u8"
+    #return "http://217.118.160.67/10/v166/aes/adaptive/components/soaps/gtst/279883/" + token + ".ssm/" + token + ".m3u8"
+    return "http://manifest.us.rtl.nl/rtlxl/v166/network/pc/adaptive/components/soaps/gtst/279883/" + token + ".ssm/" + token + ".m3u8"
 
 def save(content, filename):
     file = open(filename, "w")
