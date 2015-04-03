@@ -4,14 +4,16 @@ import urllib2
 import sys
 from runprogram import runprogram
 
+import info
+
+
 ORIGINAL_HOST = "217.118.160.67"
 SERVE_HOST = "do.twinone.org:8000"
 WORK_DIR = "out"
 SERVE_FILE = "/var/www/out.mp4"
 
-def get_url(token):
-    #return "http://217.118.160.67/10/v166/aes/adaptive/components/soaps/gtst/279883/" + token + ".ssm/" + token + ".m3u8"
-    return "http://manifest.us.rtl.nl/rtlxl/v166/network/pc/adaptive/components/soaps/gtst/279883/" + token + ".ssm/" + token + ".m3u8"
+def get_url(uuid):
+    return "http://manifest.us.rtl.nl/rtlxl/v166/network/pc/adaptive/components/soaps/gtst/279883/" + uuid + ".ssm/" + uuid + ".m3u8"
 
 def save(content, filename):
     file = open(filename, "w")
@@ -45,11 +47,11 @@ def get_padded_iv(seqnum):
 
 
 if len(sys.argv) >= 2:
-    token = sys.argv[1]
+    uuid = sys.argv[1]
 else:
-    token = raw_input("Enter token: ")
+    uuid = info.get_last()['uuid']
 
-url = get_url(token)
+url = get_url(uuid)
 # print url
 
 content = urllib2.urlopen(url).read()
@@ -115,7 +117,7 @@ if status != 0:
     print out
     print err
 
-dec_key = runprogram(["./key.sh", token])[1].strip()
+dec_key = runprogram(["./key.sh", uuid])[1].strip()
 print "Got decryption key: " + dec_key
 print "Decrypting " + str(num_ts) + " files..."
 
