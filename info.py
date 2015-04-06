@@ -15,7 +15,9 @@ def comp(a):
 	return int(a['display_date'])
 
 def daysago(timestamp):
-	days = int(time.time()-timestamp) / 86400
+	now = time.time()
+	today = now - (now%86400) + 86400
+	days = int(today-timestamp) / 86400
 	if days < 0: return 'In ' + str(-days) + ' days'
 	if days == 0: return 'Today'
 	if days == 1: return 'Yesterday'
@@ -35,7 +37,7 @@ def get_last():
 	return get_data(1)[0]
 
 
-def print_latest(num):
+def print_latest(num=MAX_OUTPUT):
 	"""Convenience function that lists the last num episodes"""
 	data = get_data(num)
 	now = time.time()
@@ -47,4 +49,6 @@ def print_latest(num):
 		print "Date:", dt.strftime('%a %b %d'), '('+daysago(ts)+')'
 		print "-----------------------------------------------------"
 
-
+if __name__ == "__main__":
+	print 'Showing latest', MAX_OUTPUT, 'episodes:'
+	print_latest()
