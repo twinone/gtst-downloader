@@ -2,14 +2,13 @@
 
 import urllib2
 import sys
+import os
 from runprogram import runprogram
-
 import info
 
-
-ORIGINAL_HOST = "217.118.160.67"
-SERVE_HOST = "do.twinone.org:8000"
-WORK_DIR = "out"
+DIR = os.path.dirname(os.path.realpath(__file__))
+WORK_DIR = DIR + "/out"
+DL_HOST = "217.118.160.67"
 SERVE_FILE = "/var/www/out.mp4"
 
 def get_url(uuid):
@@ -45,21 +44,6 @@ def get_padded_iv(seqnum):
     h = hex(seqnum)[2:]
     return ("0" * (32-len(h))) + h
 
-
-if len(sys.argv) >= 2:
-    uuid = sys.argv[1]
-else:
-    uuid = info.get_last()['uuid']
-
-url = get_url(uuid)
-# print url
-
-content = urllib2.urlopen(url).read()
-# save(content, "available-streams.m3u8.txt")
-# save(content, "/var/www/available-streams.m3u8.txt")
-
-
-
 def max_resolution(file):
     """
     Returns (max_string, link)
@@ -84,12 +68,6 @@ def max_resolution(file):
             max_idx = i
     return max_str, lines[max_idx+1]
 
-max_res = max_resolution(content)
-print "Maximum available resolution: " + max_res[0]
-
-url = replace_host(max_res[1], ORIGINAL_HOST)
-content = urllib2.urlopen(url).read()
-
 def num_ts_files(lines):
     lines = content.split("\n")
     max = 0
@@ -98,40 +76,57 @@ def num_ts_files(lines):
         if not is_link(line) or not line.endswith(".ts"):
             continue
         if not link:
-            link = replace_host(line, ORIGINAL_HOST)
+            link = replace_host(line, DL_HOST)
             link = "-".join(link.split("-")[:-1]) + "-{{SEQ_NUM}}.ts"
         curr = int(line.split("-")[-1][:-3])
         if curr > max: max = curr
     return max, link
+
+
+# Main program
+if len(sys.argv) >= 2: 
+    uuid = sys.argv[1]
+else:
+    uuid = info.get_last()['uuid']
+
+info.print_latest(1, False)
+
+url = get_url(uuid)
+content = urllib2.urlopen(url).read()
+
+max_res = max_resolution(content)
+print "Resolution: " + max_res[0]
+
+url = replace_host(max_res[1], DL_HOST)
+content = urllib2.urlopen(url).read()
+
+
 
 num_ts, ts_link = num_ts_files(content)
 
 #print "Video url: " + ts_link
 # print "Number of ts files: " + str(num_ts)
 
-print ""
 print "Downloading " + str(num_ts) + " parts..."
-status, out, err = runprogram(["./parts.sh", ts_link, str(num_ts), WORK_DIR])
+status, out, err = runprogram([DIR+"/parts.sh", ts_link, str(num_ts), WORK_DIR])
 if status != 0:
     print "Error!: " + str(status)
     print out
     print err
 
-dec_key = runprogram(["./key.sh", uuid])[1].strip()
+dec_key = runprogram([DIR+"/key.sh", uuid])[1].strip()
 print "Got decryption key: " + dec_key
-print "Decrypting " + str(num_ts) + " files..."
+print "Decrypting..."
 
 for i in range(1, num_ts+1):
     infile = WORK_DIR + "/" + str(i) + ".ts"
     outfile = WORK_DIR + "/" + str(i) + ".dec.ts"
     dec_iv = get_padded_iv(i)
-    runprogram(["./decrypt.sh", infile, outfile, dec_key, dec_iv])
+    runprogram([DIR+"/decrypt.sh", infile, outfile, dec_key, dec_iv])
 
 print "All files decrypted"
-print ""
 
 print "Converting to mp4"
-runprogram(["./convert.sh", WORK_DIR, str(num_ts), SERVE_FILE])
+runprogram([DIR+"/convert.sh", WORK_DIR, str(num_ts), SERVE_FILE])
 
-print ""
-print "Done, now watch your video at http://do.twinone.org:8000/out.mp4"
+print "Done"

@@ -37,17 +37,17 @@ def get_last():
 	return get_data(1)[0]
 
 
-def print_latest(num=MAX_OUTPUT):
+def print_latest(num=MAX_OUTPUT, lines=True):
 	"""Convenience function that lists the last num episodes"""
 	data = get_data(num)
 	now = time.time()
-	print "-----------------------------------------------------"
+	if lines: print "-----------------------------------------------------"
 	for item in data:
 		ts = item['display_date']
 		dt = datetime.fromtimestamp(ts)
 		print "UUID:", item['uuid']
 		print "Date:", dt.strftime('%a %b %d'), '('+daysago(ts)+')'
-		print "-----------------------------------------------------"
+		if lines: print "-----------------------------------------------------"
 
 if __name__ == "__main__":
 	print 'Showing latest', MAX_OUTPUT, 'episodes:'
