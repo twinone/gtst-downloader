@@ -9,9 +9,12 @@ NUM_FILES="$2"
 OUT_FILE="$3"
 
 cd "$WORK_DIR"
-rm -f "$OUT_FILE" "$OUT_FILE.ts"
+rm -f "$OUT_FILE"
 for i in $(seq 1 "$NUM_FILES"); do
 	cat "$i.dec.ts" >> "$OUT_FILE.ts"
 done
 
 avconv -i "$OUT_FILE.ts" -acodec copy -vcodec copy "$OUT_FILE"
+
+rm "WORK_DIR/*.ts"
+rm "$OUT_FILE.ts"
