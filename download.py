@@ -41,7 +41,7 @@ def replace_host(link, newhost):
     return "/".join(link_split)
 
 def get_padded_iv(seqnum):
-    """ Initialization vectors consist of 16bytes (128 bit) expressed as 32 hex chars """
+    """Initialization vectors consist of 16bytes (128 bit) expressed as 32 hex chars"""
     h = hex(seqnum)[2:]
     return ("0" * (32-len(h))) + h
 
@@ -65,7 +65,7 @@ def max_resolution(file):
     Returns (max_string, link)
     max_string: Maximum resolution: WxH
     link:       Where the m3u8 file can be found
-    """
+    """ 
     lines = file.split("\n")
     max = 0
     max_str = ""
