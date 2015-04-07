@@ -7,7 +7,7 @@ from runprogram import runprogram
 import info
 
 DIR = os.path.dirname(os.path.realpath(__file__))
-WORK_DIR = DIR + "/out"
+WORK_DIR = "/tmp/gtst_downloader_out"
 DL_HOST = "217.118.160.67"
 SERVE_FILE = "/var/www/out.mp4"
 

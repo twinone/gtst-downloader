@@ -9,7 +9,7 @@ if [ -z  "$2" ]; then
 	exit 1
 fi
 
-if [ -n "$3"]; then
+if [ -n "$3" ]; then
 	WORK_DIR="$3"
 else
 	WORK_DIR="out"
