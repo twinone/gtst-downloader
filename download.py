@@ -12,7 +12,7 @@ DL_HOST = "217.118.160.67"
 SERVE_FILE = "/var/www/out.mp4"
 
 def get_url(uuid):
-    return "http://manifest.us.rtl.nl/rtlxl/v166/network/pc/adaptive/components/soaps/gtst/279883/" + uuid + ".ssm/" + uuid + ".m3u8"
+    return "http://manifest.us.rtl.nl/rtlxl/v166/network/pc/adaptive/components/soaps/gtst/343328/" + uuid + ".ssm/" + uuid + ".m3u8"
 
 def save(content, filename):
     file = open(filename, "w")
